@@ -1,0 +1,15 @@
+#cloud-config
+write_files:
+- path: /etc/pcd-app/config.env
+  owner: root:root
+  permissions: '0644'
+  content: |
+    # Written by the PCD App Catalog at first boot. Redeploy to change.
+    PCD_APP_ID='hello-world'
+    PCD_APP_VERSION='0.1.0'
+    PCD_INSTANCE_NAME='hello-world-test'
+    PCD_REGION='lab'
+    PCD_PROJECT_ID='local-test'
+    HELLO_GREETING='Hello from the catalog'
+    HELLO_COLOR='purple'
+    HELLO_SHOW_CONFIG='true'

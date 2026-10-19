@@ -1,0 +1,67 @@
+#!/bin/sh
+# hello-world: the smallest app that follows the PCD App Catalog appliance contract.
+#   1. read /etc/pcd-app/config.env (written by the catalog at first boot)
+#   2. render a page from it and a health document
+#   3. serve both on port 80 with busybox httpd
+set -eu
+
+CONFIG=/etc/pcd-app/config.env
+WWW=/run/hello-world/www
+VERSION=$(cat /usr/share/hello-world/VERSION)
+
+esc() { printf '%s' "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g'; }
+json() { printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g'; }
+
+configured=false
+if [ -r "$CONFIG" ]; then
+	# shellcheck disable=SC1090
+	. "$CONFIG"
+	configured=true
+fi
+greeting=${HELLO_GREETING:-Hello, world}
+case ${HELLO_COLOR:-blue} in
+	green) color='#1F8A5B' ;;
+	purple) color='#6B5BD2' ;;
+	*) color='#0089C7' ;;
+esac
+
+mkdir -p "$WWW/api"
+printf '{"status":"ok","app":"hello-world","version":"%s","configured":%s,"instance":"%s"}\n' \
+	"$VERSION" "$configured" "$(json "${PCD_INSTANCE_NAME:-}")" > "$WWW/api/health"
+
+{
+	cat <<HTML
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>$(esc "$greeting")</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;display:grid;place-items:center;min-height:100vh;background:#FAFAFC;color:#1B1B30}
+main{max-width:640px;padding:32px}h1{font-size:44px;margin:0 0 8px;color:$color}
+p{color:#5A5A78}table{border-collapse:collapse;margin-top:20px;font:13px ui-monospace,monospace}
+td{padding:4px 12px;border-bottom:1px solid #E4E4ED}td:first-child{color:#7B7B95}
+</style></head><body><main>
+<h1>$(esc "$greeting")</h1>
+<p>hello-world $VERSION on <b>$(esc "${PCD_INSTANCE_NAME:-$(hostname)}")</b>
+HTML
+	if [ "$configured" = true ]; then
+		printf '%s\n' "· configured by the PCD App Catalog from <code>$CONFIG</code>.</p>"
+	else
+		printf '%s\n' "· <b>not configured</b>: $CONFIG was not found.</p>"
+	fi
+	if [ "$configured" = true ] && [ "${HELLO_SHOW_CONFIG:-true}" = true ]; then
+		echo "<table>"
+		grep -v '^#' "$CONFIG" | while IFS='=' read -r key value; do
+			case $key in "" | *[!A-Z0-9_]*) continue ;; esac  # only plain names reach eval
+			value=$(eval "printf '%s' \"\${$key}\"")  # the value as sourced, quoting removed
+			printf '<tr><td>%s</td><td>%s</td></tr>\n' "$(esc "$key")" "$(esc "$value")"
+		done
+		echo "</table>"
+	fi
+	echo "</main></body></html>"
+} > "$WWW/index.html"
+
+# busybox httpd (Alpine ships it in busybox-extras). -f: foreground, so supervise-daemon
+# restarts it; -u: drop to nobody after binding :80.
+if command -v httpd >/dev/null; then
+	exec httpd -f -p 80 -h "$WWW" -u nobody
+fi
+exec busybox-extras httpd -f -p 80 -h "$WWW" -u nobody

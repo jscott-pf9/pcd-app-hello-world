@@ -1,0 +1,12 @@
+#!/sbin/openrc-run
+# shellcheck shell=sh
+name="hello-world"
+description="PCD App Catalog hello-world appliance"
+command="/usr/local/bin/hello-world"
+supervisor="supervise-daemon"
+
+depend() {
+	need net
+	# cloud-init writes /etc/pcd-app/config.env on first boot
+	after cloud-init cloud-config cloud-final
+}
