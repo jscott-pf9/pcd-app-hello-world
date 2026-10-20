@@ -61,7 +61,7 @@
       "id": "greeting",
       "label": "Greeting",
       "type": "string",
-      "section": "basic",
+      "section": "settings",
       "default": "Hello, world",
       "env": "HELLO_GREETING",
       "help": "Shown as the page heading."
@@ -70,7 +70,7 @@
       "id": "color",
       "label": "Color",
       "type": "select",
-      "section": "basic",
+      "section": "settings",
       "default": "blue",
       "env": "HELLO_COLOR",
       "options": [
@@ -106,6 +106,13 @@
   },
   "access": {
     "url": "http://{ip}/"
+  },
+  "ui": {
+    "nav": {
+      "label": "Hello World",
+      "audience": "tenant",
+      "icon": "apps"
+    }
   },
   "post_deploy_notes": "Open the page: it shows the greeting and every value the catalog wrote to /etc/pcd-app/config.env."
 }
