@@ -32,5 +32,5 @@ build/test-local.sh            # boots with test/user-data.sample; KEEP=1 leaves
 ## Release
 
 1. Bump `VERSION`, run `build/build.sh`, and update `image.source.tag`, `asset` and `checksum` in `manifest.json` from `dist/*.sha256`.
-2. Create GitHub release `v<version>` and attach `dist/hello-world-<version>.qcow2` and its `.sha256`.
+2. Create GitHub release `v<version>` and attach `dist/hello-world-<version>.qcow2`, its `.sha256`, and `manifest.json`. The catalog's **Check for updates** reads `manifest.json` from the latest release.
 3. The release must be **public**: Glance downloads the asset itself (web-download), without credentials.
