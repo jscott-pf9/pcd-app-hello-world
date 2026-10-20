@@ -20,7 +20,12 @@ echo '{"uuid": "00000000-0000-4000-8000-000000000001", "hostname": "hello-world-
 genisoimage -quiet -o "$RUN/config-drive.iso" -V config-2 -r -J "$RUN/cd"
 
 echo "==> Booting (console: $RUN/console.log, http://127.0.0.1:$PORT/)"
-qemu-system-x86_64 -enable-kvm -m 512 -smp 1 -display none -daemonize -pidfile "$RUN/qemu.pid" \
+OVMF=${OVMF:-/usr/share/OVMF}
+cp "$OVMF/OVMF_VARS_4M.fd" "$RUN/vars.fd"
+# Same shape as PCD with hw_firmware_type=uefi, hw_machine_type=q35, secure boot off.
+qemu-system-x86_64 -enable-kvm -machine q35 -m 512 -smp 1 -display none -daemonize -pidfile "$RUN/qemu.pid" \
+  -drive if=pflash,format=raw,readonly=on,file="$OVMF/OVMF_CODE_4M.fd" \
+  -drive if=pflash,format=raw,file="$RUN/vars.fd" \
   -drive file="$RUN/disk.qcow2",if=virtio \
   -drive file="$RUN/config-drive.iso",if=virtio,format=raw,readonly=on \
   -netdev user,id=n0,hostfwd=tcp:127.0.0.1:$PORT-:80 -device virtio-net-pci,netdev=n0 \

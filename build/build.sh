@@ -7,7 +7,10 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 VERSION=$(cat VERSION)
 ALPINE_BRANCH=3.21
 ALPINE_RELEASE=3.21.7
-BASE=nocloud_alpine-${ALPINE_RELEASE}-x86_64-bios-cloudinit-r0.qcow2
+# UEFI variant: it has a real GPT layout. The BIOS variant is a partitionless ext4 with boot
+# code in sector 0, which Nova's image safety check rejects ("Base image failed safety check").
+# The manifest declares hw_firmware_type=uefi to match.
+BASE=nocloud_alpine-${ALPINE_RELEASE}-x86_64-uefi-cloudinit-r0.qcow2
 BASE_URL=https://dl-cdn.alpinelinux.org/alpine/v${ALPINE_BRANCH}/releases/cloud
 OUT=dist/hello-world-${VERSION}.qcow2
 

@@ -2,11 +2,11 @@
   "schema_version": "0.1",
   "id": "hello-world",
   "name": "Hello World",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "Platform9",
   "repo": "https://github.com/jscott-pf9/pcd-app-hello-world",
   "tagline": "The smallest app that follows the catalog contract.",
-  "description": "A demo and test appliance for the PCD App Catalog: an 87 MiB Alpine image that reads /etc/pcd-app/config.env at first boot, renders a page from it, and serves /api/health. Use it to try the catalog end to end.",
+  "description": "A demo and test appliance for the PCD App Catalog: a 94 MiB Alpine image that reads /etc/pcd-app/config.env at first boot, renders a page from it, and serves /api/health. Use it to try the catalog end to end.",
   "category": "utilities",
   "tags": ["Demo", "Test"],
   "featured": false,
@@ -20,14 +20,17 @@
     "format": "qcow2",
     "source": {
       "type": "github_release",
-      "tag": "v0.1.0",
-      "asset": "hello-world-0.1.0.qcow2",
-      "checksum": "sha256:7907573f72220920841a50078928def6353c4ced99924b9a43254c4d6eda7d9b"
+      "tag": "v0.1.1",
+      "asset": "hello-world-0.1.1.qcow2",
+      "checksum": "sha256:8621b64209af57aa7982cdbe0aba567e01c07e95302964f7c0c21de97ee23d74"
     },
     "min_disk_gb": 1,
     "properties": {
       "os_type": "linux",
-      "hw_disk_bus": "virtio"
+      "hw_disk_bus": "virtio",
+      "hw_firmware_type": "uefi",
+      "hw_machine_type": "q35",
+      "os_secure_boot": "disabled"
     }
   },
   "requirements": { "vcpus": 1, "memory_mb": 512, "disk_gb": 1 },

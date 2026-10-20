@@ -2,7 +2,7 @@
 
 The smallest app that follows the [PCD App Catalog appliance contract](../pcd-app-catalog/docs/APPLIANCE_CONTRACT.md). It exists to demo and test the catalog end to end, with no app logic to get in the way.
 
-- **Image:** an 87 MiB qcow2 (200 MiB virtual disk). It's the stock Alpine 3.21 cloud image plus one shell script, and runs on 1 vCPU / 512 MB.
+- **Image:** a 94 MiB qcow2 (214 MiB virtual disk, UEFI). It's the stock Alpine 3.21 UEFI cloud image plus one shell script, and runs on 1 vCPU / 512 MB.
 - **First boot:** cloud-init writes `/etc/pcd-app/config.env` (the catalog's standard user-data). The `hello-world` service reads it, renders a page, and serves it with busybox `httpd` on port 80.
 - **`GET /api/health`** returns `{"status":"ok","configured":true,…}`, which the catalog's health check polls.
 - **The page** shows the greeting and colour chosen in the install form, plus every key the catalog wrote, so you can see exactly what an app receives.
