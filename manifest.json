@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "id": "hello-world",
   "name": "Hello World",
   "version": "0.1.1",
@@ -8,7 +8,10 @@
   "tagline": "The smallest app that follows the catalog contract.",
   "description": "A demo and test appliance for the PCD App Catalog: a 94 MiB Alpine image that reads /etc/pcd-app/config.env at first boot, renders a page from it, and serves /api/health. Use it to try the catalog end to end.",
   "category": "utilities",
-  "tags": ["Demo", "Test"],
+  "tags": [
+    "Demo",
+    "Test"
+  ],
   "featured": false,
   "icon": "hello-world.svg",
   "includes": [
@@ -33,10 +36,25 @@
       "os_secure_boot": "disabled"
     }
   },
-  "requirements": { "vcpus": 1, "memory_mb": 512, "disk_gb": 1 },
-  "network": { "port_security": true, "floating_ip": "optional" },
+  "requirements": {
+    "vcpus": 1,
+    "memory_mb": 512,
+    "disk_gb": 1
+  },
+  "network": {
+    "port_security": true,
+    "floating_ip": "optional",
+    "addressing": [
+      "dhcp",
+      "static"
+    ]
+  },
   "ports": [
-    { "protocol": "tcp", "port": 80, "purpose": "Web page and health check" }
+    {
+      "protocol": "tcp",
+      "port": 80,
+      "purpose": "Web page and health check"
+    }
   ],
   "configuration": [
     {
@@ -56,9 +74,18 @@
       "default": "blue",
       "env": "HELLO_COLOR",
       "options": [
-        { "value": "blue", "label": "Blue" },
-        { "value": "green", "label": "Green" },
-        { "value": "purple", "label": "Purple" }
+        {
+          "value": "blue",
+          "label": "Blue"
+        },
+        {
+          "value": "green",
+          "label": "Green"
+        },
+        {
+          "value": "purple",
+          "label": "Purple"
+        }
       ]
     },
     {
@@ -71,7 +98,14 @@
       "help": "Lists every key the catalog wrote, to show what an app receives."
     }
   ],
-  "health_check": { "type": "http", "port": 80, "path": "/api/health", "timeout_s": 300 },
-  "access": { "url": "http://{ip}/" },
+  "health_check": {
+    "type": "http",
+    "port": 80,
+    "path": "/api/health",
+    "timeout_s": 300
+  },
+  "access": {
+    "url": "http://{ip}/"
+  },
   "post_deploy_notes": "Open the page: it shows the greeting and every value the catalog wrote to /etc/pcd-app/config.env."
 }
